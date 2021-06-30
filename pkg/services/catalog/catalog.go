@@ -2,13 +2,14 @@ package catalog
 
 import (
 	"context"
-	"flag"
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
 	"time"
 
 	"github.com/grafana/grafana/pkg/registry"
+
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
@@ -20,9 +21,17 @@ import (
 const ServiceName = "Catalog"
 
 type Service struct {
+	Client kubernetes.Interface
 }
 
 func (s *Service) Init() error {
+	clientset, err := connect()
+	if err != nil {
+		return err
+	}
+
+	s.Client = clientset
+
 	return nil
 }
 
@@ -44,29 +53,29 @@ func (s *Service) Run(ctx context.Context) error {
 	}
 }
 
-func connectToKube() {
-	var kubeconfig *string
+func connect() (*kubernetes.Clientset, error) {
+	var kubeconfig string
 	if home := homedir.HomeDir(); home != "" {
-		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
+		kubeconfig = filepath.Join(home, ".kube", "config")
 	} else {
-		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
+		return nil, errors.New("could not get filepath of kube config")
 	}
-	flag.Parse()
 
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
+
+	return clientset, nil
 }
 
-func startServiceInformer() error {
-
+func (s *Service) startServiceInformer() error {
 	log.Println("Initializing informer...")
-	factory := informers.NewSharedInformerFactory(clientset, time.Second)
+	factory := informers.NewSharedInformerFactory(s.Client, time.Second)
 	stopper := make(chan struct{})
 	defer close(stopper)
 	// https://pkg.go.dev/k8s.io/client-go@v0.21.2/informers/core/v1#NewServiceInformer
@@ -87,4 +96,6 @@ func startServiceInformer() error {
 	})
 
 	inf.Run(stopper)
+
+	return nil
 }

@@ -9,7 +9,9 @@ replace github.com/denisenkom/go-mssqldb => github.com/grafana/go-mssqldb v0.0.0
 
 // Override k8s.io/client-go outdated dependency, which is an indirect dependency of grafana/loki.
 // It's also present on grafana/loki's go.mod so we'll need till it gets updated.
-replace k8s.io/client-go => k8s.io/client-go v0.18.8
+// replace k8s.io/client-go => k8s.io/client-go v0.21.2
+// replace k8s.io/api => k8s.io/api v0.21.2
+// replace k8s.io/apimachinery => k8s.io/apimachinery v0.21.2
 
 require (
 	cloud.google.com/go/storage v1.14.0
@@ -19,7 +21,7 @@ require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/Masterminds/semver v1.5.0
 	github.com/VividCortex/mysqlerr v0.0.0-20170204212430-6c6b55f8796f
-	github.com/aws/aws-sdk-go v1.38.34
+	github.com/aws/aws-sdk-go v1.38.35
 	github.com/beevik/etree v1.1.0
 	github.com/benbjohnson/clock v1.1.0
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
@@ -88,7 +90,7 @@ require (
 	github.com/teris-io/shortid v0.0.0-20171029131806-771a37caa5cf
 	github.com/timberio/go-datemath v0.1.1-0.20200323150745-74ddef604fff
 	github.com/ua-parser/uap-go v0.0.0-20190826212731-daf92ba38329
-	github.com/uber/jaeger-client-go v2.27.0+incompatible
+	github.com/uber/jaeger-client-go v2.28.0+incompatible
 	github.com/unknwon/com v1.0.1
 	github.com/urfave/cli/v2 v2.3.0
 	github.com/weaveworks/common v0.0.0-20210419092856-009d1eebd624
@@ -104,7 +106,7 @@ require (
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba
 	golang.org/x/tools v0.1.0
 	gonum.org/v1/gonum v0.9.1
-	google.golang.org/api v0.45.0
+	google.golang.org/api v0.46.0
 	google.golang.org/grpc v1.37.1
 	google.golang.org/protobuf v1.26.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
@@ -116,8 +118,37 @@ require (
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+	k8s.io/api v0.21.2 // indirect
+	k8s.io/client-go v0.21.0
 	xorm.io/core v0.7.3
 	xorm.io/xorm v0.8.2
+)
+
+exclude (
+	// Exclude pre-go-mod kubernetes tags, as they are older
+	// than v0.x releases but are picked when we update the dependencies.
+	k8s.io/client-go v1.4.0
+	k8s.io/client-go v1.4.0+incompatible
+	k8s.io/client-go v1.5.0
+	k8s.io/client-go v1.5.0+incompatible
+	k8s.io/client-go v1.5.1
+	k8s.io/client-go v1.5.1+incompatible
+	k8s.io/client-go v10.0.0+incompatible
+	k8s.io/client-go v11.0.0+incompatible
+	k8s.io/client-go v12.0.0+incompatible
+	k8s.io/client-go v2.0.0+incompatible
+	k8s.io/client-go v2.0.0-alpha.1+incompatible
+	k8s.io/client-go v3.0.0+incompatible
+	k8s.io/client-go v3.0.0-beta.0+incompatible
+	k8s.io/client-go v4.0.0+incompatible
+	k8s.io/client-go v4.0.0-beta.0+incompatible
+	k8s.io/client-go v5.0.0+incompatible
+	k8s.io/client-go v5.0.1+incompatible
+	k8s.io/client-go v6.0.0+incompatible
+	k8s.io/client-go v7.0.0+incompatible
+	k8s.io/client-go v8.0.0+incompatible
+	k8s.io/client-go v9.0.0+incompatible
+	k8s.io/client-go v9.0.0-invalid+incompatible
 )
 
 replace github.com/apache/thrift => github.com/apache/thrift v0.14.1
