@@ -3,7 +3,6 @@ package catalog
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"path/filepath"
 	"time"
@@ -31,7 +30,6 @@ func (s *Service) Init() error {
 	}
 
 	s.Client = clientset
-
 	return nil
 }
 
@@ -44,13 +42,7 @@ func init() {
 }
 
 func (s *Service) Run(ctx context.Context) error {
-	t := time.NewTicker(time.Second)
-	for {
-		select {
-		case n := <-t.C:
-			fmt.Println("Tick at", n)
-		}
-	}
+	return s.startServiceInformer()
 }
 
 func connect() (*kubernetes.Clientset, error) {
@@ -74,7 +66,6 @@ func connect() (*kubernetes.Clientset, error) {
 }
 
 func (s *Service) startServiceInformer() error {
-	log.Println("Initializing informer...")
 	factory := informers.NewSharedInformerFactory(s.Client, time.Second)
 	stopper := make(chan struct{})
 	defer close(stopper)
