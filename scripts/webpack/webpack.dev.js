@@ -56,10 +56,17 @@ module.exports = (env = {}) =>
       parseInt(env.noTsCheck, 10)
         ? new DefinePlugin({}) // bogus plugin to satisfy webpack API
         : new ForkTsCheckerWebpackPlugin({
+            async: true,
             typescript: {
               mode: 'write-references',
               memoryLimit: 4096,
+              configOverwrite: {
+                compilerOptions: {
+                  incremental: true,
+                },
+              },
               diagnosticOptions: {
+                // semantic diagnostic option is incredibly slow
                 semantic: false,
                 syntactic: true,
               },

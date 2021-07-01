@@ -45,7 +45,7 @@ export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState
     if (this.container) {
       this.bootstrapNgApp();
     } else {
-      throw new Error('Failed to boot angular app, no container to attach to');
+      throw new Error('Failed to boot angular app, no container to attach to. Sorry.');
     }
   }
 
